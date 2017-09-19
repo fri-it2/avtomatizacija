@@ -1,0 +1,11 @@
+#!/usr/bin/expect -f
+set timeout 120
+spawn ssh -o StrictHostKeyChecking=no sshucilnice@192.168.251.145
+#expect "*?assword:*"
+send -- "sudo iptables -F\r"
+sleep 5
+send -- "sudo reboot\r"
+sleep 5
+send -- "exit\r"
+
+expect eof

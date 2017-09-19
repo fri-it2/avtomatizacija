@@ -1,0 +1,51 @@
+#!/usr/bin/expect -f
+set timeout 120
+spawn ssh -o StrictHostKeyChecking=no sshucilnice@192.168.251.145
+#expect "*?assword:*"
+#send -- "sudo iptables -A INPUT -i lo -p udp -s 127.0.0.1 -d 127.0.1.1 --sport 40000:65535 --dport 53 -m limit --limit 50/s -j ACCEPT\r"
+#sleep 
+#send -- "sudo iptables -A INPUT -i lo -p udp -d 127.0.0.1 -s 127.0.1.1 --dport 40000:65535 --sport 53 -m limit --limit 50/s -j ACCEPT\r"
+#sleep 1
+#send -- "sudo iptables -A INPUT -i lo -p tcp -s 127.0.0.1 -d 127.0.1.1 --sport 40000:65535 --dport 53 -m limit --limit 50/s -j ACCEPT\r"
+#sleep 1
+send -- "sudo iptables -A INPUT -i lo -p tcp -d 127.0.0.1 -s 127.0.1.1 --dport 40000:65535 --sport 53 -m limit --limit 50/s -j ACCEPT\r"
+sleep 1
+send -- "sudo iptables -A OUTPUT -o eth0 -p tcp -d 212.235.188.26 -m state --state NEW,ESTABLISHED -j ACCEPT\r"
+sleep 1
+send -- "sudo iptables -A INPUT -i eth0 -p tcp -s 212.235.188.26 -m state --state ESTABLISHED -j ACCEPT\r"
+sleep 1
+send -- "sudo iptables -A OUTPUT  -o eth0 -p udp -d 212.235.188.28 --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT\r"
+sleep 1
+send -- "sudo iptables -A INPUT  -i eth0 -p udp -s 212.235.188.28 --sport 53 -m state --state ESTABLISHED     -j ACCEPT\r"
+sleep 1
+send -- "sudo iptables -A OUTPUT -o eth0 -p tcp -d 212.235.188.28 --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT\r"
+sleep 1
+send -- "sudo iptables -A INPUT  -i eth0 -p tcp -s 212.235.188.28 --sport 53 -m state --state ESTABLISHED     -j ACCEPT\r"
+sleep 1
+send -- "sudo iptables -A OUTPUT -o  eth0 -p udp -d 193.2.1.66 --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT\r"
+sleep 1
+send -- "sudo iptables -A INPUT -i  eth0 -p udp -s 193.2.1.66 --sport 53 -m state --state ESTABLISHED     -j ACCEPT\r"
+sleep 1
+send -- "sudo iptables -A OUTPUT -o eth0 -p tcp -d 193.2.1.66 --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT\r"
+sleep 1
+send -- "sudo iptables -A INPUT -p tcp -s 192.168.251.0/24 -j ACCEPT\r"
+sleep 1
+send -- "sudo iptables -A OUTPUT -p tcp -d 192.168.251.0/24 -j ACCEPT\r"
+sleep 1
+#send -- "sudo iptables -A INPUT -i eth0 -p tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT\r"
+#sleep 1
+#send -- "sudo iptables -A OUTPUT -o eth0 -p tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT\r"
+#sleep 1
+send -- "sudo iptables -A INPUT -i eth0 -p tcp -s 193.2.1.66 --sport 53 -m state --state ESTABLISHED     -j ACCEPT\r\r"
+sleep 1
+send -- "sudo iptables -A INPUT -i lo -j ACCEPT\r"
+sleep 1
+send -- "sudo iptables -A OUTPUT -o lo -j ACCEPT\r"
+sleep 1
+send -- "sudo iptables -A INPUT  -j DROP\r"
+sleep 1
+send -- "sudo iptables -A OUTPUT  -j DROP\r"
+#send -- "mkdir matjazmoj\r"
+sleep 1
+send -- "exit\r"
+expect eof
