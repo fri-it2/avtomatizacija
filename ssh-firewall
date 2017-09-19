@@ -45,7 +45,7 @@ sleep 1
 send -- "sudo iptables -A INPUT  -j DROP\r"
 sleep 1
 send -- "sudo iptables -A OUTPUT  -j DROP\r"
-#send -- "mkdir matjazmoj\r"
+
 sleep 1
 send -- "exit\r"
 expect eof
