@@ -1,0 +1,8 @@
+@echo off
+FOR /L %%i IN (0,1,20) DO (
+	IF %%i lss 10 (
+		start psexec \\%10%%i -s \\storer\Virtual\RTKP06.bat
+	) ELSE (
+		start psexec \\%1%%i -s \\storer\Virtual\RTKP06.bat
+	)
+)
