@@ -1,0 +1,7 @@
+\\storer\Virtual\SafeExamBrowserInstaller.exe /s /v" /qn"
+xcopy \\storer\Virtual\CppReference.pdf F:\
+xcopy \\storer\Virtual\CReference.pdf F:\
+xcopy \\storer\Virtual\CSharpReference.pdf F:\
+xcopy \\storer\Virtual\JavaReference.pdf F:\
+xcopy \\storer\Virtual\PythonReference.pdf F:\
+xcopy \\storer\Virtual\SebClientSettings.seb C:\ProgramData\SafeExamBrowser\
