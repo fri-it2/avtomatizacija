@@ -1,0 +1,11 @@
+while true; do 
+for ip in 192.168.254.{101..122}; do 
+ping -c 1 -t 2 $ip 
+if [ $? -eq 0 ]; then 
+    echo "${ip} je dosegljiv $(date +%Y-%m-%d:%H:%M:%S)">>dss.$ip.txt; 
+else 
+    echo "${ip} down $(date +%Y-%m-%d:%H:%M:%S)">>dss.$ip.txt; 
+fi 
+done 
+done 
+ 
