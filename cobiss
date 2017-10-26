@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+<title>Vodenje bibliografij v sistemu COBISS</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />	<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+
+
+    <script src='build/pdfmake.min.js'></script>
+    <script src='build/vfs_fonts.js'></script>
+  
+    
+<script>
+
+function naredipdf(){
+//var source=document.getElementById("username").value
+var pdf = new jsPDF('p', 'pt', 'letter')
+
+// source can be HTML-formatted string, or a reference
+// to an actual DOM element from which the text will be scraped.
+, source = $('#fromHTMLtestdiv')[0]
+
+// we support special element handlers. Register them with jQuery-style
+// ID selector for either ID or node name. ("#iAmID", "div", "span" etc.)
+// There is no support for any other type of selectors
+// (class, of compound) at this time.
+, specialElementHandlers = {
+    // element with id of "bypass" - jQuery style selector
+    '#bypassme': function(element, renderer){
+        // true = "handled elsewhere, bypass text extraction"
+        return true
+    }
+}
+
+margins = {
+    top: 80,
+    bottom: 60,
+    left: 40,
+    width: 522
+  };
+  // all coords and widths are in jsPDF instance's declared units
+  // 'inches' in this case
+var source="<!DOCTYPE html><html><head><meta charset=\"UTF-8\"><title>Title of the document</title></head><body>š</body></html>"
+pdf.fromHTML(
+    source // HTML string or DOM elem ref.
+    , margins.left // x coord
+    , margins.top // y coord
+    , {
+        'width': margins.width // max width of content on PDF
+        , 'elementHandlers': specialElementHandlers
+    },
+    function (dispose) {
+      // dispose: object with X, Y of the last line add to the PDF
+      //          this allow the insertion of new lines after html
+        pdf.save('Test.pdf');
+      },
+    margins
+  )
+}
+function cobiss()
+{
+        var knjiznica="Knjižnica FKKT in FRI\n Večna pot 113, Ljubljana\n FRI: Tel:01/4798005, FKKT: 01/4798006\n\n"
+        var avtor=document.getElementById("avtor").value
+        var predlagatelj="Predlagatelj dokumenta(avtor/soavtor): "
+        var avtor1=predlagatelj.concat(avtor)
+        var delo=document.getElementById("naslov").value
+        var avtorji=document.getElementById("avtorji").value
+        var slo=document.getElementById("slo").value
+        var eng=document.getElementById("angl").value
+         var vir=document.getElementById("vir").value
+         if (vir.localeCompare("")!=0){
+            var vir1=vir.match(/.{1,70}/g);
+            vir = vir1.join(" ") }
+         var tipologija=document.getElementById("tipologija").value
+         var prispevki=document.getElementById("prispevki").value
+         var priloge="Priloga: "
+         var datum = new Date();
+         var date="Datum: "+datum.getDate() + ". "+ (datum.getMonth()+1) + ". " + datum.getFullYear()
+          
+         
+           if (document.getElementById("fotokopija").checked){
+
+              var fotokopija=document.getElementById("fotokopija").value
+             priloge=priloge+", "+fotokopija
+           }
+            if (document.getElementById("dokazila").checked){
+
+              var dokazila=document.getElementById("dokazila").value
+             priloge=priloge+", "+dokazila
+           }
+
+
+
+        var docDefinition = {
+   content: [// using a { text: '...' } object lets you set styling properties
+     { text: knjiznica, fontSize: 12 },
+
+     // if you set pass an array instead of a string, you'll be able
+     // to style any fragment individually
+     {
+       text:  avtor1,fontSize:12
+         
+       
+     },
+
+      {
+       text: '\n\n',fontSize:12
+         
+       
+     },
+   
+
+      { text: 'Spremni list o dokumentu/delu za vodenje bibliografij raziskovalcev v sistemu COBISS', fontSize:15, bold:true },
+
+        {
+       text: '\n\n',fontSize:12
+         
+       
+     },
+
+       {
+       text: 'Tipologija dokumenta/dela:\n',fontSize:12
+         
+       
+     },
+      
+      {
+       text: tipologija, fontSize:12
+         
+       
+     },
+      {
+       text: '\n\n',fontSize:12
+         
+       
+     },
+       {
+       text: 'Za prispevke, ki so objavljeni v zborniku:\n',fontSize:12
+         
+       
+     },
+
+      {
+       text: prispevki, fontSize:12
+         
+       
+     },
+       {
+       text: '\n\n',fontSize:12
+         
+       
+     },
+     
+      {
+       text: 'Naslov dela/dokumenta:\n',fontSize:12
+         
+       
+     },
+      {
+       text: delo, fontSize:12
+         
+       
+     },
+       {
+       text: '\n\n',fontSize:12
+         
+       
+     },
+       {
+       text: 'Priimek in imena:avtorja in soavtorja:\n',fontSize:12
+         
+       
+     },
+      {
+       text: avtorji, fontSize:12
+         
+       
+     },
+       {
+       text: '\n\n',fontSize:12
+         
+       
+     },
+      {
+       text: 'Ključne besede v slovenkem jeziku:\n',fontSize:12
+         
+       
+     },
+      {
+       text: slo, fontSize:12
+         
+       
+     },
+       {
+       text: '\n\n',fontSize:12
+         
+       
+     },
+      {
+       text: 'Ključne besede v angleškem jeziku:\n',fontSize:12
+         
+       
+     },
+      eng, 
+       {
+       text: '\n\n',fontSize:12
+         
+       
+     },
+      {
+       text: 'Vir:\n',fontSize:12
+         
+       
+     },
+      {
+       text: vir,fontSize:12
+         
+       
+     },/*,
+       {
+       text: '\n\n',fontSize:12
+         
+       
+     },
+
+    /*  { text: 'Priloge', style: 'header' },
+        {
+            ol: [
+                'primarni vir',
+                'fotokopija članka/prispevka in fotokopija naslova primarnega vira',
+                'dokazila(recenzija, vabila)',
+            ]
+        },*/
+          {
+       text: '\n\n',fontSize:12
+         
+       
+     },
+      {
+       text: priloge, fontSize:12
+         
+       
+     },   
+    {
+       text: '\n\n',fontSize:12
+         
+       
+     },
+      {
+       text: date,fontSize:12
+         
+       
+     }
+   ]
+ };
+  // pdfMake.createPdf(docDefinition).open();
+ 
+
+ // print the PDF (temporarily Chrome-only)
+//pdfMake.createPdf(docDefinition).print();
+
+ // download the PDF (temporarily Chrome-only)
+pdfMake.createPdf(docDefinition).download('cobiss-obrazec.pdf');
+
+}
+        </script>
+</head>
+
+	<title>Spremni list o dokumentu/delu za vodenje bibliografij raziskovalcev v sistemu COBISS</title>
+</head>
+<body>
+
+<form  action="vnos.php" method="get"class="pure-form pure-form-aligned"> 
+    <fieldset>
+        <div class="pure-form">
+
+          <legend><b>Spremni list o dokumentu/delu za vodenje bibliografij raziskovalcev v sistemu COBISS</b></legend>
+        </div>
+        <div class="pure-control-group">
+        	<label for="ime">Predlagatelj dokumenta/dela(avtor oz. soavtor)</label>
+        	<input name="ime" id="avtor" type="text" placeholder="Predlagatelj dokumenta">
+        </div>	
+       
+         
+       <div class="pure-control-group">
+        <label for="posta">Tipologija dokumenta/dela</label>
+        <select id="tipologija" name="posta">
+                 <option value="1.01 Izvirni znanstveni članek">1.01 Izvirni znanstveni članek</option>
+            <option value="1.02 Pregledni znanstveni članek">1.02 Pregledni znanstveni članek</option>
+                 <option value="1.03 Kratki znanstveni prispevek">1.03 Kratki znanstveni prispevek</option>
+                  <option value="1.04 Strokovni članek">1.04 Strokovni članek</option>
+            <option value="1.05 Poljudni članek">1.05 Poljudni članek</option>
+                 <option value="1.06 Objavljeni znanstveni prispevek na konferenci (vabljeno predavanje)">1.06 Objavljeni znanstveni prispevek na konferenci (vabljeno predavanje)</option>
+                  <option value="1.07 Objavljeni strokovni prispevek na konferenci (vabljeno predavanje)">1.07 Objavljeni strokovni prispevek na konferenci (vabljeno predavanje)</option>
+            <option value="1.08 Objavljeni znanstveni prispevek na konferenci">1.08 Objavljeni znanstveni prispevek na konferenci</option>
+                 <option value="1.09 Objavljeni strokovni prispevek na konferenci">1.09 Objavljeni strokovni prispevek na konferenci</option>
+                  <option value="1.10 Objavljeni povzetek znanstvenega prispevka na konferenci (vabljeno predavanje)">1.10 Objavljeni povzetek znanstvenega prispevka na konferenci (vabljeno predavanje)</option>
+                  <option value="1.11 Objavljeni povzetek strokovnega prispevka na konferenci (vabljeno predavanje)">1.11 Objavljeni povzetek strokovnega prispevka na konferenci (vabljeno predavanje)</option>
+            <option value="1.12 Objavljeni povzetek znanstvenega prispevka na konferenci">1.12 Objavljeni povzetek znanstvenega prispevka na konferenci</option>
+                 <option value="1.13 Objavljeni povzetek strokovnega prispevka na konferenci">1.13 Objavljeni povzetek strokovnega prispevka na konferenci)</option>
+                 
+            <option value="1.16 Samostojni znanstveni sestavek ali poglavje v monografski publikaciji">1.16 Samostojni znanstveni sestavek ali poglavje v monografski publikaciji</option>
+                 <option value="1.17 Samostojni strokovni sestavek ali poglavje v monografski publikaciji">1.17 Samostojni strokovni sestavek ali poglavje v monografski publikaciji</option>
+                  <option value="1.18 Strokovni sestavek v slovarju, enciklopediji ali leksikonu">1.18 Strokovni sestavek v slovarju, enciklopediji ali leksikonu</option>
+            <option value="1.19 Recenzija, prikaz knjige, kritika">1.19 Recenzija, prikaz knjige, kritika</option>
+                 <option value="1.20 Predgovor, spremna beseda">1.20 Predgovor, spremna beseda</option>
+                  <option value="1.21 Polemika, diskusijski prispevek, komentar">1.21 Polemika, diskusijski prispevek, komentar</option>
+            <option value="1.22 Intervju">1.22 Intervju</option>
+                 <option value="1.23 Umetniški sestavek">1.23 Umetniški sestaveki</option>
+                  <option value="1.24 Bibliografija, kazalo ipd.">1.24 Bibliografija, kazalo ipd.</option>
+            <option value="1.25 Drugi sestavni deli">1.25 Drugi sestavni deli</option>
+                 <option value="1.26 Znanstveni sestavek v slovarju, enciklopediji, leksikonu">1.26 Znanstveni sestavek v slovarju, enciklopediji, leksikonu</option>
+                    <option value="2.01 Znanstvena monografija">2.01 Znanstvena monografija</option>
+            <option value="2.02 Strokovna monografija">2.02 Strokovna monografija</option>
+                 <option value="2.03 Univerzitetni, visokošolski ali višješolski učbenik z recenzijo">2.03 Univerzitetni, visokošolski ali višješolski učbenik z recenzijo</option>
+                  <option value="2.04 Srednješolski, osnovnošolski ali drugi učbenik z recenzijo">2.04 Srednješolski, osnovnošolski ali drugi učbenik z recenzijo</option>
+            <option value="2.05 Drugo učno gradivo">2.05 Drugo učno gradivo</option>
+                 <option value="2.06 Slovar, enciklopedija, leksikon, priročnik, atlas, zemljevid">2.06 Slovar, enciklopedija, leksikon, priročnik, atlas, zemljevid</option>
+                  <option value="2.07 Bibliografija">2.07 Bibliografija</option>
+            <option value="2.08 Doktorska disertacija">2.08 Doktorska disertacija</option>
+                 <option value="2.09 Magistrsko delo">2.09 Magistrsko delo</option>
+                  <option value="2.10 Specialistično delo">2.10 Specialistično delo</option>
+                  <option value="2.11 Diplomsko delo ">2.11 Diplomsko delo </option>
+            <option value="2.12 Končno poročilo o rezultatih raziskav">2.12 Končno poročilo o rezultatih raziskav</option>
+                 <option value="2.13 Elaborat, predštudija, študija">2.13 Elaborat, predštudija, študija</option>
+                 
+            <option value="2.14 Projektna dokumentacija (idejni projekt, izvedbeni projekt)">2.14 Projektna dokumentacija (idejni projekt, izvedbeni projekt)</option>
+                 <option value="2.15 Izvedensko mnenje, arbitražna odločba">2.15 Izvedensko mnenje, arbitražna odločba</option>
+                  <option value="2.16 Umetniško delo">2.16 Umetniško delo</option>
+            <option value="2.17 Katalog razstave">2.17 Katalog razstave</option>
+                 <option value="2.18 Raziskovalni ali dokumentarni film, zvočna ali video publikacija">2.18 Raziskovalni ali dokumentarni film, zvočna ali video publikacija</option>
+                   <option value="2.19 Radijska ali televizijska oddaja">2.19 Radijska ali televizijska oddaja</option>
+                  <option value="2.20 Zaključena znanstvena zbirka podatkov ali korpus">2.20 Zaključena znanstvena zbirka podatkov ali korpus</option>
+            <option value="2.19 Radijska ali televizijska oddaja">2.19 Radijska ali televizijska oddaja</option>
+                 <option value="2.21 Programska oprema">2.21 Programska oprema</option>
+                  <option value="2.22 Nova sorta">2.22 Nova sorta</option>
+            <option value="2.23 Patentna prijava">2.23 Patentna prijava</option>
+                 <option value="2.24 Patent">2.24 Patent</option>
+
+            <option value="2.25 Druge monografije in druga zaključena dela">2.25 Druge monografije in druga zaključena dela</option>
+                 <option value="2.26 Temeljni znanstveni slovar ali leksikon">2.26 Temeljni znanstveni slovar ali leksikon</option>
+                  <option value="2.27 Znanstveni terminološki slovar, enciklopedija ali tematski leksikon">2.27 Znanstveni terminološki slovar, enciklopedija ali tematski leksikon</option>
+            <option value="2.28 Znanstvenokritična izdaja vira">2.28 Znanstvenokritična izdaja vira</option>
+                 <option value="2.29 Model">22.29 Model</option>
+                  <option value="2.2.30 Zbornik strokovnih ali nerecenziranih znanstvenih prispevkov na konferenci">2.30 Zbornik strokovnih ali nerecenziranih znanstvenih prispevkov na konferenci
+</option>
+            <option value="2.31 Zbornik recenziranih znanstvenih prispevkov na mednarodni ali tuji konferenci">2.31 Zbornik recenziranih znanstvenih prispevkov na mednarodni ali tuji konferenci</option>
+                 <option value="2.32 Zbornik recenziranih znanstvenih prispevkov na domači konferenci">2.32 Zbornik recenziranih znanstvenih prispevkov na domači konferenci</option>
+                  <option value="3.10 Umetniška poustvaritev">3.10 Umetniška poustvariteva</option>
+            
+                 <option value="3.11 Radijski ali TV dogodek">3.11 Radijski ali TV dogodek</option>
+                 <option value="3.12 Razstava">3.12 Razstava</option>
+                 <option value="3.14 Predavanje na tuji univerzi">3.14 Predavanje na tuji univerzi</option>
+                  <option value="3.15 Prispevek na konferenci brez natisa">3.15 Prispevek na konferenci brez natisa</option>
+            <option value="3.16 Vabljeno predavanje na konferenci brez natisa">3.16 Vabljeno predavanje na konferenci brez natisa</option>
+                 <option value="3.25 Druga izvedena dela">3.25 Druga izvedena dela</option>
+              </select>
+        </div>
+        <div class="pure-control-group">
+        <label for="posta">Za prispevke, ki so objavljeni v zborniku</label>
+        <select id="prispevki" name="posta">
+        <option value=""></option>
+         <option value="2.30(Zbornik strokovnih in nerecenziranih znanstvenih prispevkov na konferenci)">2.30(Zbornik strokovnih in nerecenziranih znanstvenih prispevkov na konferenci)</option>
+            <option value="2.31(Zbornik recenziranih znanstevih prispevkov na mednarodni ali tuji konferenci)">2.31(Zbornik recenziranih znanstevih prispevkov na mednarodni ali tuji konferenci)</option>
+                 <option value="2.32(Zbornik nerecenziranih znanstevih prispevkov na domači konferenci)">2.32(Zbornik nerecenziranih znanstevih prispevkov na domači konferenci)</option>
+              </select>
+        </div>
+        
+        <div class="pure-control-group">
+            <label for="ime">Naslov dela/dokumenta</label>
+            <textarea id="naslov" class="pure-input-1-2" placeholder="naslov dela"></textarea>
+        </div>
+    
+        <div class="pure-control-group">
+            <label for="ime">Priimek, ime:avtorja in soavtorjev</label>
+            <textarea id="avtorji" class="pure-input-1-2" placeholder="avtorji in soavtorji"></textarea>
+        </div>
+        <div class="pure-control-group">
+            <label for="ime">Vir</label>
+            <textarea class="pure-input-1-2" placeholder="vir" id="vir"></textarea>
+        </div>
+        <div class="pure-control-group">
+            <label for="ime">Ključne besede v slovenskem jeziku</label>
+            <textarea id="slo" class="pure-input-1-2" placeholder="ključne besede v slovenskem jeziku"></textarea>
+        </div>
+         <div class="pure-control-group">
+            <label for="ime">Ključne besede v angleškem jeziku</label>
+            <textarea id = "angl" class="pure-input-1-2" placeholder="ključne besede v angleškem jeziku"></textarea>
+        </div>
+          <label for="ime">Priloge</label>
+        <div class="pure-control-group">
+         <input type="checkbox" id="fotokopija" value="primarni vir (članek oziroma prispevek, zbornik, knjiga ...)">primarni vir (članek oziroma prispevek, zbornik, knjiga ...)<br>
+    	   <input type="checkbox" id="dokazila" value="dokazila (vabilo, recenzija ...)">dokazila (vabilo, recenzija ...)<br>
+        </div>
+			<button type="button" onclick="javascript:cobiss()" class="pure-button pure-button-primary">Izpiši pdf</button>
+        </div>
+    </fieldset>
+
+</body>
+</html>
+
